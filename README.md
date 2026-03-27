@@ -97,8 +97,7 @@ curl -fsSL https://raw.githubusercontent.com/DingTalk-Real-AI/dingtalk-workspace
 irm https://raw.githubusercontent.com/DingTalk-Real-AI/dingtalk-workspace-cli/main/scripts/install.ps1 | iex
 ```
 
-> 自动检测操作系统和架构，从 [GitHub Releases](https://github.com/DingTalk-Real-AI/dingtalk-workspace-cli/releases) 下载预编译二进制文件，并安装 Agent Skills — 无需 Go、Node.js 或其他依赖。
-> 打包安装器总是安装通用的 `.agents` 技能目标，同时也会安装到已存在的 agent 目录，包括 `.claude`、`.cursor`、`.gemini`、`.codex`、`.github`、`.windsurf`、`.augment`、`.cline`、`.amp`、`.kiro` 和 `.trae`。
+> 自动检测操作系统和架构，从 [GitHub Releases](https://github.com/DingTalk-Real-AI/dingtalk-workspace-cli/releases) 下载预编译二进制文件，并安装 Agent Skills 到 `~/.agents/skills/dws` — 无需 Go、Node.js 或其他依赖。大多数 AI Agent（Claude Code、Cursor、Windsurf 等）可自动发现 `.agents/skills/` 目录下的技能。
 
 > [!TIP]
 > 二进制文件默认安装到 `~/.local/bin`。如果安装后找不到 `dws` 命令，请将其添加到 PATH：
@@ -130,11 +129,6 @@ sh scripts/install.sh
 
 ## 开始使用
 
-`dws` 目前仅对已审批的企业开放。您需要创建钉钉应用并按照以下步骤申请白名单。
-
-> [!NOTE]
-> 本项目正在积极开发中。在开源版本稳定之前，接口和打包方式可能会有所变化。
-
 ### 步骤 1：创建钉钉应用
 
 进入 [开放平台应用开发后台](https://open-dev.dingtalk.com/fe/app?hash=%23%2Fcorp%2Fapp#/corp/app)，在「企业内部应用 - 钉钉应用」点击右上角的**创建应用**，新建一个应用。
@@ -161,13 +155,7 @@ sh scripts/install.sh
 
 ### 步骤 4：申请白名单
 
-加入官方钉钉群，将您的 Client ID（AppKey）提供给群内的开放平台同学，申请白名单权限。
-
-扫描下方二维码或 [点击链接加入](https://qr.dingtalk.com/action/joingroup?code=v1,k1,v9/YMJG9qXhvFk5juktYnQziN70rF7QHebC/JLztTVRuRVJIwrSsXmL8oFqU5ajJ&_dt_no_comment=1&origin=11) 官方社群：
-
-<p align="center">
-  <img src="https://img.alicdn.com/imgextra/i1/O1CN01ZqtgeV1cImFmTZPAH_!!6000000003578-2-tps-398-372.png" alt="DingTalk Group QR Code" width="200">
-</p>
+参照页面顶部的 [共创阶段说明](#important)，加入钉钉 DWS 共创群完成白名单配置。
 
 ### 步骤 5：使用凭证登录
 
@@ -212,11 +200,11 @@ Skills 由[安装](#安装)脚本自动安装。如需单独将 skills 安装到
 curl -fsSL https://raw.githubusercontent.com/DingTalk-Real-AI/dingtalk-workspace-cli/main/scripts/install-skills.sh | sh
 ```
 
-一键二进制安装器会将 skills 安装到您的主目录 agent 目录。
-当您想要为当前仓库或项目添加 `.agents/skills/dws` 以及检测到的本地 agent 目录（如 `.claude`、`.cursor`、`.gemini`、`.codex`、`.github`、`.windsurf`、`.augment`、`.cline`、`.amp`、`.kiro` 和 `.trae`）时，请使用 `install-skills.sh`。
+一键安装器（`install.sh`）将 skills 安装到 `~/.agents/skills/dws`（主目录）。
+当您想要为特定项目仓库添加 skills 时，请使用 `install-skills.sh`，它会安装到 `./.agents/skills/dws`（当前工作目录）。
 
 > [!NOTE]
-> **主目录 vs. 项目 skills**：一键安装器（`install.sh`）将 skills 放在 `$HOME` 下的 agent 目录（如 `~/.claude/skills/dws`）。而 `install-skills.sh` 脚本安装到 **当前工作目录**（如 `./.claude/skills/dws`），这对于为特定项目仓库添加 skills 很有用。
+> **主目录 vs. 项目 skills**：`install.sh` 将 skills 放在 `$HOME/.agents/skills/dws`。`install-skills.sh` 安装到**当前工作目录**（`./.agents/skills/dws`），适用于为特定项目仓库添加 skills。
 
 ## 高级用法
 
@@ -294,9 +282,9 @@ dws completion fish > ~/.config/fish/completions/dws.fish
 
 ```
 Market Registry ──► Discovery ──► IR (规范化目录) ──► CLI (Cobra) ──► Transport (MCP JSON-RPC)
-      │                 │                                  │
-      ▼                 ▼                                  ▼
-  mcp.dingtalk.com   缓存（TTL + 过期降级）          Compat 兼容层（旧命令别名）
+      │                 │
+      ▼                 ▼
+  mcp.dingtalk.com   缓存（TTL + 过期降级）
 ```
 
 1. **Market** — 从 `mcp.dingtalk.com` 获取 MCP 服务注册表
@@ -304,7 +292,6 @@ Market Registry ──► Discovery ──► IR (规范化目录) ──► CLI
 3. **IR** — 将服务规范化为统一的产品/工具目录
 4. **CLI** — 将目录挂载到 Cobra 命令树，映射 flag 到 MCP 输入参数
 5. **Transport** — 执行 MCP JSON-RPC 调用，支持重试、认证注入和响应大小限制
-6. **Compat** — 旧版命令别名，保证向后兼容
 
 使用 `-f json` 时，所有输出 — 成功、错误和元数据 — 都是结构化 JSON。
 

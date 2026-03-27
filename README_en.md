@@ -129,11 +129,6 @@ This detects the local source checkout and installs both the binary and skills w
 
 ## Getting Started
 
-`dws` is currently available to approved enterprises only. You need to create a DingTalk application and request whitelist access by following the steps below.
-
-> [!NOTE]
-> This project is under active development. Expect interface and packaging changes while the open-source release surface stabilizes.
-
 ### Step 1: Create a DingTalk Application
 
 Go to the [Open Platform App Development Console](https://open-dev.dingtalk.com/fe/app?hash=%23%2Fcorp%2Fapp#/corp/app). Under "Internal Enterprise Apps - DingTalk Apps", click **Create App** in the top right corner to create a new application.
@@ -160,13 +155,7 @@ Click "App Release - Version Management & Release", publish a version to make th
 
 ### Step 4: Request Whitelist Access
 
-Join the official DingTalk group and provide your Client ID (AppKey) to the Open Platform team members in the group to request whitelist access.
-
-Scan the QR code below or [click to join](https://qr.dingtalk.com/action/joingroup?code=v1,k1,v9/YMJG9qXhvFk5juktYnQziN70rF7QHebC/JLztTVRuRVJIwrSsXmL8oFqU5ajJ&_dt_no_comment=1&origin=11) the official community:
-
-<p align="center">
-  <img src="https://img.alicdn.com/imgextra/i1/O1CN01ZqtgeV1cImFmTZPAH_!!6000000003578-2-tps-398-372.png" alt="DingTalk Group QR Code" width="200">
-</p>
+Refer to the [Co-creation Phase notice](#important) at the top of this page to join the DingTalk DWS co-creation group and complete whitelist configuration.
 
 ### Step 5: Login with Credentials
 
@@ -293,9 +282,9 @@ When `-f json` is used, error responses include structured payloads with `catego
 
 ```
 Market Registry ──► Discovery ──► IR (Canonical Catalog) ──► CLI (Cobra) ──► Transport (MCP JSON-RPC)
-      │                 │                                        │
-      ▼                 ▼                                        ▼
-  mcp.dingtalk.com   Cache (TTL + stale fallback)         Compat layer (legacy aliases)
+      │                 │
+      ▼                 ▼
+  mcp.dingtalk.com   Cache (TTL + stale fallback)
 ```
 
 1. **Market** — fetches the MCP server registry from `mcp.dingtalk.com`
@@ -303,7 +292,6 @@ Market Registry ──► Discovery ──► IR (Canonical Catalog) ──► C
 3. **IR** — normalizes servers into a canonical product/tool catalog
 4. **CLI** — mounts the catalog onto a Cobra command tree, maps flags to MCP input parameters
 5. **Transport** — executes MCP JSON-RPC calls with retries, auth injection, and response size limits
-6. **Compat** — legacy command aliases for backward compatibility with older CLI versions
 
 All output — success, errors, and metadata — is structured JSON when using `-f json`.
 
