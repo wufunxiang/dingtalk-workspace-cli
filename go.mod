@@ -15,6 +15,8 @@ require (
 require (
 	github.com/danieljoos/wincred v1.2.3 // indirect
 	github.com/godbus/dbus/v5 v5.2.2 // indirect
+	github.com/itchyny/gojq v0.12.18 // indirect
+	github.com/itchyny/timefmt-go v0.1.7 // indirect
 	github.com/mattn/go-colorable v0.1.13 // indirect
 	github.com/mattn/go-isatty v0.0.20 // indirect
 )
@@ -24,4 +26,3 @@ require (
 	github.com/spf13/pflag v1.0.9
 	gopkg.in/yaml.v3 v3.0.1
 )
-
