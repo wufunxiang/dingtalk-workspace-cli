@@ -9,7 +9,7 @@
 <p align="center">
   <img src="https://img.shields.io/badge/Go-1.25+-green?logo=go&logoColor=white" alt="Go 1.25+">
   <a href="https://github.com/DingTalk-Real-AI/dingtalk-workspace-cli/blob/main/LICENSE"><img src="https://img.shields.io/badge/License-Apache_2.0-blue" alt="License Apache-2.0"></a>
-  <a href="https://github.com/DingTalk-Real-AI/dingtalk-workspace-cli/releases"><img src="https://img.shields.io/badge/release-v1.0.3-red" alt="v1.0.3"></a>
+  <a href="https://github.com/DingTalk-Real-AI/dingtalk-workspace-cli/releases"><img src="https://img.shields.io/badge/release-v1.0.4-red" alt="v1.0.4"></a>
   <a href="https://github.com/DingTalk-Real-AI/dingtalk-workspace-cli/actions/workflows/ci.yml"><img src="https://github.com/DingTalk-Real-AI/dingtalk-workspace-cli/actions/workflows/ci.yml/badge.svg" alt="CI"></a>
   <img src=".github/badges/coverage.svg" alt="Coverage">
 </p>
@@ -139,7 +139,23 @@ export DWS_CLIENT_SECRET=<your-app-secret>
 dws auth login
 ```
 
-> CLI 参数优先于环境变量。凭证用于钉钉 OAuth 设备流认证。
+<details>
+<summary><strong>凭证配置优先级</strong></summary>
+
+`client-id` 和 `client-secret` 支持多种配置方式，按以下优先级生效（从高到低）：
+
+| 优先级 | 配置方式 | 说明 |
+|------|----------|------|
+| 1 | CLI 参数 / 持久化配置 | `--client-id` / `--client-secret` 命令行参数；首次登录成功后自动保存，`client-secret` 存储在系统 Keychain 中 |
+| 2 | 环境变量 | `DWS_CLIENT_ID` / `DWS_CLIENT_SECRET` |
+| 3 | 默认值 | 代码中的预设值（仅开发时使用） |
+
+**推荐用法**：
+- **首次登录**：使用 `--client-id` 和 `--client-secret` 参数，登录成功后凭证会自动安全存储
+- **后续使用**：直接运行 `dws` 命令，Token 自动刷新时会从 Keychain 读取已保存的凭证
+- **CI/CD 环境**：建议使用环境变量配置
+
+</details>
 
 ## 快速开始
 
@@ -238,7 +254,7 @@ curl -fsSL https://raw.githubusercontent.com/DingTalk-Real-AI/dingtalk-workspace
 ## 功能特性
 
 <details>
-<summary><strong>智能输入纠错</strong> — 自动修正 AI 模型常见的参数错误 <code>v1.0.1</code></summary>
+<summary><strong>智能输入纠错</strong> — 自动修正 AI 模型常见的参数错误</summary>
 
 内置 Pipeline 纠错引擎，支持命名风格转换、粘连参数拆分、拼写模糊匹配：
 
@@ -267,7 +283,7 @@ dws aitable record query --base-id BASE_ID --tabel-id TABLE_ID       # --tabel-i
 </details>
 
 <details>
-<summary><strong>jq 过滤 & 字段筛选</strong> — 精确控制输出，减少 token 消耗 <code>v1.0.1</code></summary>
+<summary><strong>jq 过滤 & 字段筛选</strong> — 精确控制输出，减少 token 消耗</summary>
 
 ```bash
 # 内置 jq 表达式
@@ -281,7 +297,7 @@ dws aitable record query --base-id BASE_ID --table-id TABLE_ID --fields invocati
 </details>
 
 <details>
-<summary><strong>Schema 自省</strong> — 调用前查询任意工具的参数结构 <code>v1.0.1</code></summary>
+<summary><strong>Schema 自省</strong> — 调用前查询任意工具的参数结构</summary>
 
 ```bash
 dws schema                                              # 列出所有产品和工具
@@ -293,7 +309,7 @@ dws schema --jq '.products[].id'                        # 提取所有产品 ID
 </details>
 
 <details>
-<summary><strong>管道 & 文件输入</strong> — 从文件或 stdin 读取 flag 值 <code>v1.0.1</code></summary>
+<summary><strong>管道 & 文件输入</strong> — 从文件或 stdin 读取 flag 值</summary>
 
 ```bash
 # 从文件读取消息内容
@@ -316,7 +332,7 @@ dws chat message send-by-bot --robot-code BOT_CODE --group GROUP_ID \
 | 服务 | 命令 | 工具数 | 子命令 | 描述 |
 |------|------|:------:|--------|------|
 | 通讯录 | `contact` | 8 | `user` `dept` | 按姓名/手机号搜索、批量查询、部门树、当前用户信息 |
-| 群聊 | `chat` | 14 | `message` `group` `bot` `search` | 群增删改查、成员管理、消息拉取、话题回复、以用户身份发消息 |
+| 群聊 | `chat` | 14 | `message` `group` `bot` `search` | 群增删改查、成员管理、话题回复、以用户身份发消息 |
 | 机器人 | `chat bot` | 9 | — | 机器人创建、群聊/单聊消息、Webhook、消息撤回 |
 | 日历 | `calendar` | 13 | `event` `room` `participant` `busy` | 日程增删改查、会议室预订、闲忙查询、参与者管理 |
 | 待办 | `todo` | 6 | `task` | 创建、列表、修改、完成、详情、删除 |
