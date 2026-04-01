@@ -13,7 +13,7 @@
 
 package app
 
-var version = "v1.0.6"
+var version = "dev"
 
 // Version returns the current CLI version string, including build metadata
 // when injected via ldflags (buildTime, gitCommit).
